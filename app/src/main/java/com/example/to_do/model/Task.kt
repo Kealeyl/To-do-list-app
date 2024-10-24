@@ -3,8 +3,8 @@ package com.example.to_do.model
 import java.util.Date
 
 data class Task (
-    val isComplete: Boolean = false,
-    val priority: Priority = Priority.High,
+    val isComplete: Boolean,
+    val priority: Priority,
     val startTime: Time,
     val endTime: Time,
     val month: Month,

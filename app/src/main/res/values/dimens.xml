@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Task card -->
+    <dimen name="task_card_height">72dp</dimen>
+    <dimen name="task_card_spacer_width">16dp</dimen>
+    <dimen name="task_card_column_padding_start">8dp</dimen>
+    <dimen name="task_card_name_padding_bottom">8dp</dimen>
+    <dimen name="task_card_image_padding_end">4dp</dimen>
+    <dimen name="task_card_image_size">16dp</dimen>
+
+</resources>
