@@ -2,7 +2,7 @@ package com.example.to_do.model
 
 import java.util.Date
 
-data class Task (
+data class Task(
     val isComplete: Boolean,
     val priority: Priority,
     val startTime: Time,
@@ -19,32 +19,14 @@ data class Task (
     }
 }
 
-enum class Priority{
+enum class Priority {
     High,
     Medium,
     Low
 }
 
-enum class Colors{
+enum class Colors {
     Orange,
     Blue,
     Pink
-}
-
-enum class Month{
-    January,
-    February,
-    March,
-    April,
-    May,
-    June,
-    July,
-    August,
-    September,
-    October,
-    November,
-    December
-}
-
-class Time(val hour: Int, val minute: Int, val isAM: Boolean) {
 }
