@@ -1,3 +1,30 @@
 <resources>
     <string name="app_name">To-do</string>
+    <string name="search">Search Task Here</string>
+
+    <string name="get_alert">Get alert for this task</string>
+    <string name="name_label">Name</string>
+    <string name="error_label">Incorrect input</string>
+    <string name="description_label">Description</string>
+    <string name="schedule">Schedule</string>
+
+    <plurals name="home_screen_title">
+        <item quantity="one">You have %d task to complete</item>
+        <item quantity="other">You have %d tasks to complete</item>
+    </plurals>
+
+    <plurals name="amount_of_tasks">
+        <item quantity="one">You have %d task to complete</item>
+        <item quantity="other">You have %d tasks to complete</item>
+    </plurals>
+
+    <plurals name="task">
+        <item quantity="one">Task</item>
+        <item quantity="other">Tasks</item>
+    </plurals>
+
+    <string name="edit_task_title">Edit task</string>
+    <string name="create_task_title">Create task</string>
+
+
 </resources>
