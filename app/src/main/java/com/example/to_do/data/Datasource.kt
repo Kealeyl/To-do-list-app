@@ -47,7 +47,6 @@ val listOfTasks = listOf(
     )
 )
 
-
 val weeks = listOf(
     WeekData(27, Month.July, arrayOfWeekDays(27)),
     WeekData(3, Month.October, arrayOfWeekDays(3)),

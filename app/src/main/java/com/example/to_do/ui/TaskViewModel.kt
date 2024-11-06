@@ -1,11 +1,12 @@
 package com.example.to_do.ui
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.example.to_do.model.Colors
-import com.example.to_do.model.Month
-import com.example.to_do.model.Priority
+import com.example.to_do.data.createNumAmountOfTasks
+import com.example.to_do.data.listOfTasks
 import com.example.to_do.model.Task
-import com.example.to_do.model.Time
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,33 +19,83 @@ class TaskViewModel : ViewModel() {
     private val _uiState = MutableStateFlow<MutableList<Task>>(mutableListOf())
 
     // read-only state flow
+    // change to immutable List<Task> ?
     val uiState: StateFlow<MutableList<Task>> = _uiState.asStateFlow()
 
+    init {
+        _uiState.value = createNumAmountOfTasks(3).toMutableList()
+    }
 
-    fun createTask(
-        priority: Priority,
-        startTime: Time,
-        endTime: Time,
-        month: Month,
-        dateNumber: Int,
-        isAlertOn: Boolean,
-        name: String,
-        description: String,
-        color: Colors
-    ) {
+    var userSearch by mutableStateOf("")
+        private set
+
+    private var tempTask: Task = listOfTasks[0]
+
+    private var taskIndex: Int = -1
+
+    var tempName by mutableStateOf("")
+        private set
+
+    var tempDescription by mutableStateOf("")
+        private set
+
+//    val tempTask: Task = Task(
+//        isComplete = false,
+//        priority = Priority.Low,
+//        color = Colors.Blue,
+//        startTime = Time(0, 0, true),
+//        endTime = Time(0, 0, true),
+//        dateNumber = 1,
+//        isAlertOn = false,
+//        name = "",
+//        description = "",
+//        month = Month.January
+//    )
+
+    fun getAmountOfTasks(): Int{
+        return _uiState.value.size
+    }
+
+    fun clickTask(index: Int) {
+        taskIndex = index
+        tempTask = getTask(index)
+        tempName = tempTask.name
+        tempDescription = tempTask.description
+    }
+
+    fun initializeNewTask(){
+        tempName = ""
+        tempDescription = ""
+    }
+
+    fun onSearch(searched: String) {
+        userSearch = searched
+    }
+
+    fun onNameEdit(nameChange: String) {
+        tempName = nameChange
+    }
+
+    fun onDescriptionEdit(descriptionChange: String) {
+        tempDescription = descriptionChange
+    }
+
+
+    // reset temp task
+    fun createTask() {
         _uiState.update {
             it.add(
                 Task(
                     false,
-                    priority,
-                    startTime,
-                    endTime,
-                    month,
-                    dateNumber,
-                    isAlertOn,
-                    name,
-                    description,
-                    color
+                    tempTask.priority,
+                    tempTask.startTime,
+                    tempTask.endTime,
+                    tempTask.month,
+                    tempTask.dateNumber,
+                    tempTask.isAlertOn,
+                    tempName,
+                    tempDescription,
+                    tempTask.color
                 )
             )
             it
@@ -52,41 +103,35 @@ class TaskViewModel : ViewModel() {
     }
 
     fun getTask(index: Int): Task {
+        if (index < 0 || index >= _uiState.value.size) {
+            throw IndexOutOfBoundsException("Index $index is out of bounds for size $_uiState.value.size")
+        }
         return _uiState.value[index]
     }
 
-    fun editTask(
-        index: Int,
-        priority: Priority? = null,
-        startTime: Time? = null,
-        endTime: Time? = null,
-        month: Month? = null,
-        dateNumber: Int? = null,
-        isAlertOn: Boolean? = null,
-        name: String? = null,
-        description: String? = null,
-        color: Colors? = null
-    ) {
+    // reset temp task
+    fun editTask(index: Int = taskIndex) {
         if (index < 0 || index >= _uiState.value.size) {
-            throw IndexOutOfBoundsException("Index $index is out of bounds for size ${_uiState.value.size}")
+            throw IndexOutOfBoundsException("Index $index is out of bounds for size $_uiState.value.size")
         }
-            _uiState.update {
-                it[index] = it[index].copy(
-                    priority = priority ?: it[index].priority,
-                    startTime = startTime ?: it[index].startTime,
-                    endTime = endTime ?: it[index].endTime,
-                    month = month ?: it[index].month,
-                    dateNumber = dateNumber ?: it[index].dateNumber,
-                    isAlertOn = isAlertOn ?: it[index].isAlertOn,
-                    name = name ?: it[index].name,
-                    description = description ?: it[index].description,
-                    color = color ?: it[index].color
-                )
-                it
-            }
+        _uiState.update {
+            it[index] = it[index].copy(
+                priority = tempTask.priority,
+                startTime = tempTask.startTime,
+                endTime = tempTask.endTime,
+                month = tempTask.month,
+                dateNumber = tempTask.dateNumber,
+                isAlertOn = tempTask.isAlertOn,
+                name = tempName,
+                description = tempDescription,
+                color = tempTask.color,
+            )
+            it
         }
 
-    fun deleteTask(index: Int){
+    }
+
+    fun deleteTask(index: Int = taskIndex) {
         if (index < 0 || index >= _uiState.value.size) {
             throw IndexOutOfBoundsException("Index $index is out of bounds for size ${_uiState.value.size}")
         }

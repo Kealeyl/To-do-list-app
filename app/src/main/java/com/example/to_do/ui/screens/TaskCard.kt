@@ -1,10 +1,5 @@
 package com.example.to_do.ui.screens
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,12 +12,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -31,7 +25,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.to_do.R
 import com.example.to_do.data.listOfTasks
@@ -40,7 +33,12 @@ import com.example.to_do.ui.theme.TodoTheme
 
 
 @Composable
-fun TaskCard(task: Task, checked: Boolean, onCheckedChange: (Boolean) -> Unit, modifier: Modifier = Modifier) {
+fun TaskCard(
+    task: Task,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier
+) {
     Card(modifier = modifier.height(dimensionResource(R.dimen.task_card_height))) {
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Spacer(
@@ -65,7 +63,7 @@ fun TaskCard(task: Task, checked: Boolean, onCheckedChange: (Boolean) -> Unit, m
                 )
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Image(
+                    Icon(
                         painter = painterResource(id = R.drawable.baseline_calendar_month_24),
                         contentDescription = "Calendar image",
                         modifier = Modifier
@@ -89,10 +87,14 @@ fun TaskCard(task: Task, checked: Boolean, onCheckedChange: (Boolean) -> Unit, m
 @Composable
 private fun TaskCardPreview() {
     TodoTheme {
-        TaskCard(
-            listOfTasks[1], checked = true, onCheckedChange = {}, modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp)
-        )
+        val task = listOfTasks[0]
+
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            TaskCard(task = task, checked = true, onCheckedChange = {})
+        }
     }
 }
