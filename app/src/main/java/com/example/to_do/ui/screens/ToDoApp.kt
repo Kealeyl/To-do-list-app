@@ -10,10 +10,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.to_do.R
 import com.example.to_do.ui.TaskViewModel
 
@@ -40,15 +42,15 @@ fun ToDoApp(
         backStackEntry?.destination?.route ?: ToDoScreen.Home.name // default value of home screen
     )
 
-    // var showToast by remember { mutableStateOf(false) }
-
     Scaffold(
         topBar = {
             ToDoAppBar(
                 currentScreenTitle = currentScreen.titleResId,
                 // if there's a screen behind the current screen on the back stack, the Up button should show
                 canNavigateBack = navController.previousBackStackEntry != null,
-                navigateUp = { navController.navigateUp() },
+                navigateUp = {
+                    navController.navigateUp()
+                },
                 listSize = taskViewModel.getAmountOfTasks() // only used for home screen num of tasks
             )
         }
@@ -64,15 +66,14 @@ fun ToDoApp(
             // keep nav logic separate from individual UI
             composable(ToDoScreen.Home.name) {
                 HomeScreen(
-                    userSearch = taskViewModel.userSearch,
                     onUserSearchChange = taskViewModel::onSearch,
                     taskUiState = taskUiState,
-                    onTaskClick = {
-                        taskViewModel.clickTask(it)
+                    onTaskClick = { index, task ->
+                        taskViewModel.clickTask(task)
                         navController.navigate(ToDoScreen.EditTask.name)
                     },
                     onCreateClick = {
-                        taskViewModel.initializeNewTask()
+                        taskViewModel.resetTempTask()
                         navController.navigate(ToDoScreen.CreateTask.name)
                     }
                 )
@@ -80,8 +81,7 @@ fun ToDoApp(
 
             composable(ToDoScreen.EditTask.name) {
                 TaskDetailsScreen(
-                    name = taskViewModel.tempName,
-                    description = taskViewModel.tempDescription,
+                    taskUIState = taskUiState,
                     onDescriptionChange = taskViewModel::onDescriptionEdit,
                     onNameChange = taskViewModel::onNameEdit,
                     onSave = {
@@ -90,7 +90,7 @@ fun ToDoApp(
                         //showToast = true
                     },
                     onDelete = {
-                        taskViewModel.deleteTask()
+                        taskViewModel.deleteTask(it)
                         navController.navigateUp()
                     },
                     isEditScreen = true
@@ -99,12 +99,11 @@ fun ToDoApp(
 
             composable(ToDoScreen.CreateTask.name) {
                 TaskDetailsScreen(
-                    name = taskViewModel.tempName,
-                    description = taskViewModel.tempDescription,
+                    taskUIState = taskUiState,
                     onDescriptionChange = taskViewModel::onDescriptionEdit,
                     onNameChange = taskViewModel::onNameEdit,
                     onCreate = {
-                        taskViewModel.createTask()
+                        taskViewModel.createTask(it)
                         navController.navigateUp()
                     },
                     isEditScreen = false

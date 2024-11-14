@@ -28,20 +28,17 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.to_do.R
-import com.example.to_do.data.listOfTasks
+import com.example.to_do.data.TaskUIState
 import com.example.to_do.model.Task
 
 @Composable
 fun HomeScreen(
-    userSearch: String = "Default",
-    onUserSearchChange: (String) -> Unit = {},
-    taskUiState: MutableList<Task> = listOfTasks.toMutableList(),
-    onTaskClick: (Int) -> Unit = {},
-    onCreateClick: () -> Unit = {},
+    onUserSearchChange: (String) -> Unit,
+    taskUiState: TaskUIState,
+    onTaskClick: (Int, Task) -> Unit,
+    onCreateClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-
-    //var task by remember { mutableStateOf(listOfTasks[0]) }
 
     Column(
         modifier = modifier.fillMaxSize(),
@@ -51,18 +48,18 @@ fun HomeScreen(
         //.safeDrawingPadding(),
     ) {
 
-        SearchBar(userSearch, onUserSearchChange)
+        SearchBar(taskUiState.userSearch, onUserSearchChange)
 
         Text(
             text = LocalContext.current.resources.getQuantityString(
                 R.plurals.task,
-                taskUiState.size
+                taskUiState.listOfTasks.size
             )
         )
 
         Box {
             taskCardColumns(
-                taskUiState,
+                taskUiState.listOfTasks,
                 onTaskClick = onTaskClick,
                 modifier = Modifier.height(460.dp).fillMaxWidth()
             )
@@ -74,17 +71,11 @@ fun HomeScreen(
                     .padding(20.dp)
             )
         }
-
-
     }
-
 }
 
 @Composable
 fun SearchBar(value: String, onValueChange: (String) -> Unit, modifier: Modifier = Modifier) {
-
-    //var value by remember { mutableStateOf("") }
-
     OutlinedTextField(
         value = value,
         leadingIcon = { Icon(painter = painterResource(id = R.drawable.baseline_search_24), null) },
@@ -101,16 +92,14 @@ fun SearchBar(value: String, onValueChange: (String) -> Unit, modifier: Modifier
 @Composable
 fun taskCardColumns(
     listOfTasks: List<Task>,
-    onTaskClick: (Int) -> Unit,
+    onTaskClick: (Int, Task) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(modifier = modifier) {
-        itemsIndexed(listOfTasks) { i, task ->
+        itemsIndexed(listOfTasks) { index, task ->
             TaskCard(task, true, {}, modifier = Modifier
                 .padding(10.dp)
-                .clickable {
-                    onTaskClick(i)
-                })
+                .clickable { onTaskClick(index, task) })
         }
     }
 }
@@ -131,5 +120,8 @@ fun FloatingCreateButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
 @Preview(showSystemUi = true)
 @Composable
 fun homeScreenPreview() {
-    HomeScreen()
+    HomeScreen(onUserSearchChange = {},
+        onCreateClick = {},
+        onTaskClick = { _, _  ->},
+        taskUiState = TaskUIState())
 }

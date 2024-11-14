@@ -40,16 +40,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.to_do.R
-import com.example.to_do.data.listOfTasks
+import com.example.to_do.data.TaskUIState
+import com.example.to_do.data.listOfTasksDummy
 import com.example.to_do.data.weeks
+import com.example.to_do.model.Task
 
 // weekly calandar
 // navigation
 
 @Composable
 fun TaskDetailsScreen(
-    name: String,
-    description: String,
+    taskUIState: TaskUIState,
     onDescriptionChange: (String) -> Unit,
     onNameChange: (String) -> Unit,
     onHighClick: () -> Unit = {},
@@ -57,10 +58,10 @@ fun TaskDetailsScreen(
     onLowClick: () -> Unit = {},
     alertOn: Boolean = true,
     onAlertOnChange: (Boolean) -> Unit = {},
-    onCreate: () -> Unit = {},
+    onCreate: (Task) -> Unit = {},
     isEditScreen: Boolean,
     onSave: () -> Unit = {},
-    onDelete: () -> Unit = {},
+    onDelete: (Task) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -74,8 +75,8 @@ fun TaskDetailsScreen(
         WeekBar()
 
         NameAndDesc(
-            name = name,
-            description = description,
+            name = taskUIState.tempTask.name,
+            description = taskUIState.tempTask.description,
             onDescriptionChange = onDescriptionChange,
             onNameChange = onNameChange
         )
@@ -85,17 +86,15 @@ fun TaskDetailsScreen(
         AlertSwitch(alertOn, onAlertOnChange)
 
         if (isEditScreen) {
-            EditButtons(onSave = onSave, onDelete = onDelete, name = name)
+            EditButtons(onSave = onSave, onDelete = onDelete, task = taskUIState.tempTask)
         } else {
-            CreateButton(onCreate = onCreate, name = name)
+            CreateButton(onCreate = onCreate, task = taskUIState.tempTask)
         }
-
-
     }
 }
 
 @Composable
-fun EditButtons(onSave: () -> Unit, onDelete: () -> Unit, name: String) {
+fun EditButtons(onSave: () -> Unit, onDelete: (Task) -> Unit, task: Task) {
 
     val context = LocalContext.current // for the toast
 
@@ -103,30 +102,30 @@ fun EditButtons(onSave: () -> Unit, onDelete: () -> Unit, name: String) {
         Button(
             onClick = {
                 onSave()
-                Toast.makeText(context, "Saved changes of $name", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Saved changes of ${task.name}", Toast.LENGTH_SHORT).show()
             },
-            enabled = name.isNotEmpty(),
+            enabled = task.name.isNotEmpty(),
             modifier = Modifier.weight(1f)
         ) { Text("Save Changes") }
         Button(onClick = {
-            onDelete()
-            Toast.makeText(context, "Deleted $name", Toast.LENGTH_SHORT).show()
+            onDelete(task)
+            Toast.makeText(context, "Deleted ${task.name}", Toast.LENGTH_SHORT).show()
         }, modifier = Modifier.weight(1f)) { Text("Delete Task") }
     }
 }
 
 @Composable
-fun CreateButton(onCreate: () -> Unit, name: String) {
+fun CreateButton(onCreate: (Task) -> Unit, task: Task) {
 
     val context = LocalContext.current // for the toast
 
     // the button is enabled when the user writes a name
     Button(
         onClick = {
-            onCreate()
-            Toast.makeText(context, "Created $name", Toast.LENGTH_SHORT).show()
+            onCreate(task)
+            Toast.makeText(context, "Created ${task.name}", Toast.LENGTH_SHORT).show()
         },
-        enabled = name.isNotEmpty(),
+        enabled = task.name.isNotEmpty(),
         modifier = Modifier.fillMaxWidth()
     ) {
         Text("Create Task")
@@ -297,12 +296,11 @@ fun DaysRow(daysList: Array<Pair<String, Int>>) {
 @Preview(showSystemUi = true)
 @Composable
 fun TaskDetailsScreenPreview() {
-    val aTask = listOfTasks[0]
     TaskDetailsScreen(
-        name = "A default task!",
-        description = "A default description!",
         onDescriptionChange = {},
         onNameChange = {},
-        isEditScreen = true
+        isEditScreen = true,
+        onDelete = {},
+        taskUIState = TaskUIState()
     )
 }

@@ -8,7 +8,7 @@ import com.example.to_do.model.Time
 import com.example.to_do.model.WeekData
 import com.example.to_do.model.arrayOfWeekDays
 
-val listOfTasks = listOf(
+val listOfTasksDummy = listOf(
     Task(
         isComplete = false,
         priority = Priority.High,
@@ -45,6 +45,19 @@ val listOfTasks = listOf(
         description = "Third task made",
         color = Colors.Blue
     )
+)
+
+val defaultTask = Task(
+    isComplete = false,
+    priority = Priority.Low,
+    color = Colors.Blue,
+    startTime = Time(0, 0, true),
+    endTime = Time(0, 0, true),
+    dateNumber = 1,
+    isAlertOn = false,
+    name = "",
+    description = "",
+    month = Month.January
 )
 
 val weeks = listOf(

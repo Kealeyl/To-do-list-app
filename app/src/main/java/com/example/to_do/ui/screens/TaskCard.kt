@@ -27,7 +27,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.example.to_do.R
-import com.example.to_do.data.listOfTasks
+import com.example.to_do.data.listOfTasksDummy
 import com.example.to_do.model.Task
 import com.example.to_do.ui.theme.TodoTheme
 
@@ -87,7 +87,7 @@ fun TaskCard(
 @Composable
 private fun TaskCardPreview() {
     TodoTheme {
-        val task = listOfTasks[0]
+        val task = listOfTasksDummy[0]
 
         Column(
             modifier = Modifier.fillMaxSize(),

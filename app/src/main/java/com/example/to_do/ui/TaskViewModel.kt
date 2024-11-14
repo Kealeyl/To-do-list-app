@@ -1,12 +1,13 @@
 package com.example.to_do.ui
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.example.to_do.data.TaskUIState
 import com.example.to_do.data.createNumAmountOfTasks
-import com.example.to_do.data.listOfTasks
+import com.example.to_do.model.Colors
+import com.example.to_do.model.Month
+import com.example.to_do.model.Priority
 import com.example.to_do.model.Task
+import com.example.to_do.model.Time
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,133 +17,94 @@ class TaskViewModel : ViewModel() {
 
     // Backing property
     // initial value is an empty mutable list
-    private val _uiState = MutableStateFlow<MutableList<Task>>(mutableListOf())
+    private val _uiState = MutableStateFlow(TaskUIState())
 
     // read-only state flow
     // change to immutable List<Task> ?
-    val uiState: StateFlow<MutableList<Task>> = _uiState.asStateFlow()
+    val uiState: StateFlow<TaskUIState> = _uiState.asStateFlow()
 
     init {
-        _uiState.value = createNumAmountOfTasks(3).toMutableList()
+        _uiState.value = TaskUIState(
+            listOfTasks = createNumAmountOfTasks(3).toMutableList()
+        )
     }
 
-    var userSearch by mutableStateOf("")
-        private set
-
-    private var tempTask: Task = listOfTasks[0]
-
-    private var taskIndex: Int = -1
-
-    var tempName by mutableStateOf("")
-        private set
-
-    var tempDescription by mutableStateOf("")
-        private set
-
-//    val tempTask: Task = Task(
-//        isComplete = false,
-//        priority = Priority.Low,
-//        color = Colors.Blue,
-//        startTime = Time(0, 0, true),
-//        endTime = Time(0, 0, true),
-//        dateNumber = 1,
-//        isAlertOn = false,
-//        name = "",
-//        description = "",
-//        month = Month.January
-//    )
-
-    fun getAmountOfTasks(): Int{
-        return _uiState.value.size
+    fun getAmountOfTasks(): Int {
+        return _uiState.value.listOfTasks.size
     }
 
-    fun clickTask(index: Int) {
-        taskIndex = index
-        tempTask = getTask(index)
-        tempName = tempTask.name
-        tempDescription = tempTask.description
+    // Set the temp task values with the values of the clicked task
+    fun clickTask(task: Task) {
+        _uiState.update {
+            it.copy(tempTask = task, originalTask = task)
+        }
     }
 
-    fun initializeNewTask(){
-        tempName = ""
-        tempDescription = ""
+    // For the creation of a new task
+    fun resetTempTask() {
+
+        val tempTask = Task(
+            isComplete = false,
+            priority = Priority.Low,
+            color = Colors.Blue,
+            startTime = Time(0, 0, true),
+            endTime = Time(0, 0, true),
+            dateNumber = 1,
+            isAlertOn = false,
+            name = "",
+            description = "",
+            month = Month.January
+        )
+
+        _uiState.update {
+            it.copy(tempTask = tempTask)
+        }
     }
 
     fun onSearch(searched: String) {
-        userSearch = searched
+        _uiState.update {
+            it.copy(userSearch = searched)
+        }
     }
 
+    // Set the temp task name
     fun onNameEdit(nameChange: String) {
-        tempName = nameChange
+        _uiState.update {
+            it.copy(tempTask = it.tempTask.copy(name = nameChange))
+        }
     }
 
+    // Set the temp task description
     fun onDescriptionEdit(descriptionChange: String) {
-        tempDescription = descriptionChange
-    }
-
-
-    // reset temp task
-    fun createTask() {
         _uiState.update {
-            it.add(
-                Task(
-                    false,
-                    tempTask.priority,
-                    tempTask.startTime,
-                    tempTask.endTime,
-                    tempTask.month,
-                    tempTask.dateNumber,
-                    tempTask.isAlertOn,
-                    tempName,
-                    tempDescription,
-                    tempTask.color
-                )
-            )
-            it
+            it.copy(tempTask = it.tempTask.copy(description = descriptionChange))
         }
     }
 
-    fun getTask(index: Int): Task {
-        if (index < 0 || index >= _uiState.value.size) {
-            throw IndexOutOfBoundsException("Index $index is out of bounds for size $_uiState.value.size")
-        }
-        return _uiState.value[index]
-    }
-
-    // reset temp task
-    fun editTask(index: Int = taskIndex) {
-        if (index < 0 || index >= _uiState.value.size) {
-            throw IndexOutOfBoundsException("Index $index is out of bounds for size $_uiState.value.size")
-        }
+    // add temp task to list
+    fun createTask(task: Task) {
         _uiState.update {
-            it[index] = it[index].copy(
-                priority = tempTask.priority,
-                startTime = tempTask.startTime,
-                endTime = tempTask.endTime,
-                month = tempTask.month,
-                dateNumber = tempTask.dateNumber,
-                isAlertOn = tempTask.isAlertOn,
-                name = tempName,
-                description = tempDescription,
-                color = tempTask.color,
-            )
-            it
+            it.copy(listOfTasks = it.listOfTasks + task)
         }
-
     }
 
-    fun deleteTask(index: Int = taskIndex) {
-        if (index < 0 || index >= _uiState.value.size) {
-            throw IndexOutOfBoundsException("Index $index is out of bounds for size ${_uiState.value.size}")
-        }
-
+    // overwrite original task to the temp task
+    fun editTask() {
         _uiState.update {
-            it.removeAt(index)
-            it
+            it.copy(listOfTasks = it.listOfTasks.map {task ->
+                if (task == it.originalTask) {
+                    _uiState.value.tempTask
+                } else {
+                    task
+                }
+            })
+        }
+    }
+
+    // delete taskToDelete
+    fun deleteTask(taskToDelete: Task) {
+        _uiState.update {
+            it.copy(listOfTasks = it.listOfTasks.filter { task -> task != taskToDelete })
         }
     }
 }
-
-
-
-
