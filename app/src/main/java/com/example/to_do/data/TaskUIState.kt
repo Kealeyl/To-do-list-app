@@ -7,8 +7,9 @@ import com.example.to_do.model.Task
 import com.example.to_do.model.Time
 
 data class TaskUIState (
-    val listOfTasks: List<Task> = emptyList(),
+    val listOfTasks: List<Task> = listOfTasksDummy,
+    val listOfTemp: List<Task> = emptyList(),
     val userSearch: String = "",
-    val tempTask: Task = defaultTask,
-    val originalTask: Task = defaultTask // used for editing tasks
+    val tempTask: Task = defaultTask,// used for editing tasks
+    val originalTask: Task = defaultTask
 )

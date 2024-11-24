@@ -3,6 +3,7 @@ package com.example.to_do.ui
 import androidx.lifecycle.ViewModel
 import com.example.to_do.data.TaskUIState
 import com.example.to_do.data.createNumAmountOfTasks
+import com.example.to_do.data.listOfTasksDummy
 import com.example.to_do.model.Colors
 import com.example.to_do.model.Month
 import com.example.to_do.model.Priority
@@ -25,7 +26,7 @@ class TaskViewModel : ViewModel() {
 
     init {
         _uiState.value = TaskUIState(
-            listOfTasks = createNumAmountOfTasks(3).toMutableList()
+            listOfTasks = listOfTasksDummy
         )
     }
 
@@ -42,7 +43,6 @@ class TaskViewModel : ViewModel() {
 
     // For the creation of a new task
     fun resetTempTask() {
-
         val tempTask = Task(
             isComplete = false,
             priority = Priority.Low,
@@ -62,8 +62,38 @@ class TaskViewModel : ViewModel() {
     }
 
     fun onSearch(searched: String) {
-        _uiState.update {
-            it.copy(userSearch = searched)
+
+        val listOfTasksOriginalOrder: List<Task> = _uiState.value.listOfTasks
+
+        if (searched.isBlank()) {
+            _uiState.update {
+                it.copy(
+                    userSearch = searched,
+                    listOfTasks = it.listOfTemp,
+                    listOfTemp = emptyList()
+                )
+            }
+        } else {
+            // get tasks that start with string
+            val listOfMatches: List<Task> =
+                _uiState.value.listOfTasks.filter { task ->
+                    task.name.startsWith(searched, ignoreCase = true)
+                }
+
+            _uiState.update {
+                it.copy(
+                    userSearch = searched,
+                    listOfTasks = (
+                            listOfMatches.sortedBy { task -> task.name } + it.listOfTasks.filter { task ->
+                                task !in listOfMatches
+                            }),
+                    listOfTemp = if (it.listOfTemp.isEmpty()) {
+                        listOfTasksOriginalOrder // Only saved original when first letter is searched
+                    } else {
+                        it.listOfTemp
+                    }
+                )
+            }
         }
     }
 
@@ -72,6 +102,8 @@ class TaskViewModel : ViewModel() {
         _uiState.update {
             it.copy(tempTask = it.tempTask.copy(name = nameChange))
         }
+
+
     }
 
     // Set the temp task description

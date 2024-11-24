@@ -231,16 +231,16 @@ fun WeekBar(
 
             IconButton(
                 onClick = {
-                    if (currentWeek == listSize) {
-                        currentWeek = 0
+                    if (currentWeek == 0) {
+                        currentWeek = listSize
                     } else {
-                        currentWeek++
+                        currentWeek--
                     }
                 }
             ) {
                 Icon(
                     painter = painterResource(R.drawable.baseline_arrow_back_ios_24),
-                    contentDescription = null
+                    contentDescription = "Arrow backward"
                 )
             }
 
@@ -252,15 +252,18 @@ fun WeekBar(
                 )
             }
 
-            Image(painter = painterResource(id = R.drawable.baseline_arrow_forward_ios_24),
-                contentDescription = "Arrow forward", modifier = Modifier.clickable {
-                    if (currentWeek == 0) {
-                        currentWeek = listSize
-                    } else {
-                        currentWeek--
-                    }
-
-                })
+            IconButton(onClick = {
+                if (currentWeek == listSize) {
+                    currentWeek = 0
+                } else {
+                    currentWeek++
+                }
+            }) {
+                Icon(
+                    painter = painterResource(R.drawable.baseline_arrow_forward_ios_24),
+                    contentDescription = "Arrow forward"
+                )
+            }
         }
         DaysRow(weeks[currentWeek].weekDays)
     }
