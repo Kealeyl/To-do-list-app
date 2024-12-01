@@ -1,21 +1,15 @@
 package com.example.to_do.ui.screens
 
-import android.widget.Toast
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,106 +25,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.to_do.R
-import com.example.to_do.data.TaskUIState
-import com.example.to_do.data.listOfTasksDummy
 import com.example.to_do.data.weeks
-import com.example.to_do.model.Task
 
 // weekly calandar
 // navigation
-
-@Composable
-fun TaskDetailsScreen(
-    taskUIState: TaskUIState,
-    onDescriptionChange: (String) -> Unit,
-    onNameChange: (String) -> Unit,
-    onHighClick: () -> Unit = {},
-    onMediumClick: () -> Unit = {},
-    onLowClick: () -> Unit = {},
-    alertOn: Boolean = true,
-    onAlertOnChange: (Boolean) -> Unit = {},
-    onCreate: (Task) -> Unit = {},
-    isEditScreen: Boolean,
-    onSave: () -> Unit = {},
-    onDelete: (Task) -> Unit = {},
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.SpaceEvenly
-    ) {
-        //topBar2(appBarTitle, onBackButton = onArrowBack)
-
-        WeekBar()
-
-        NameAndDesc(
-            name = taskUIState.tempTask.name,
-            description = taskUIState.tempTask.description,
-            onDescriptionChange = onDescriptionChange,
-            onNameChange = onNameChange
-        )
-
-        Priority(onHighClick, onMediumClick, onLowClick)
-
-        AlertSwitch(alertOn, onAlertOnChange)
-
-        if (isEditScreen) {
-            EditButtons(onSave = onSave, onDelete = onDelete, task = taskUIState.tempTask)
-        } else {
-            CreateButton(onCreate = onCreate, task = taskUIState.tempTask)
-        }
-    }
-}
-
-@Composable
-fun EditButtons(onSave: () -> Unit, onDelete: (Task) -> Unit, task: Task) {
-
-    val context = LocalContext.current // for the toast
-
-    Row {
-        Button(
-            onClick = {
-                onSave()
-                Toast.makeText(context, "Saved changes of ${task.name}", Toast.LENGTH_SHORT).show()
-            },
-            enabled = task.name.isNotEmpty(),
-            modifier = Modifier.weight(1f)
-        ) { Text("Save Changes") }
-        Button(onClick = {
-            onDelete(task)
-            Toast.makeText(context, "Deleted ${task.name}", Toast.LENGTH_SHORT).show()
-        }, modifier = Modifier.weight(1f)) { Text("Delete Task") }
-    }
-}
-
-@Composable
-fun CreateButton(onCreate: (Task) -> Unit, task: Task) {
-
-    val context = LocalContext.current // for the toast
-
-    // the button is enabled when the user writes a name
-    Button(
-        onClick = {
-            onCreate(task)
-            Toast.makeText(context, "Created ${task.name}", Toast.LENGTH_SHORT).show()
-        },
-        enabled = task.name.isNotEmpty(),
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Text("Create Task")
-    }
-}
 
 @Composable
 fun AlertSwitch(
@@ -296,14 +201,3 @@ fun DaysRow(daysList: Array<Pair<String, Int>>) {
     }
 }
 
-@Preview(showSystemUi = true)
-@Composable
-fun TaskDetailsScreenPreview() {
-    TaskDetailsScreen(
-        onDescriptionChange = {},
-        onNameChange = {},
-        isEditScreen = true,
-        onDelete = {},
-        taskUIState = TaskUIState()
-    )
-}

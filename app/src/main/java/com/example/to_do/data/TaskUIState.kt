@@ -1,15 +1,13 @@
 package com.example.to_do.data
 
-import com.example.to_do.model.Colors
-import com.example.to_do.model.Month
-import com.example.to_do.model.Priority
 import com.example.to_do.model.Task
-import com.example.to_do.model.Time
+import kotlinx.coroutines.flow.StateFlow
 
-data class TaskUIState (
-    val listOfTasks: List<Task> = listOfTasksDummy,
-    val listOfTemp: List<Task> = emptyList(),
+data class TaskUIState(
+    val listOfTasks: StateFlow<List<Task>>,
+    val listOfTasksSearch: StateFlow<List<Task>>? = null,
+    val numberOfTasks: StateFlow<Int>,
     val userSearch: String = "",
-    val tempTask: Task = defaultTask,// used for editing tasks
-    val originalTask: Task = defaultTask
+    val editTempTask: Task = defaultTask,
+    val createTempTask: Task = emptyTask
 )

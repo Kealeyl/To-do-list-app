@@ -26,22 +26,5 @@ enum class Month {
     December
 }
 
-enum class WeekDays {
-    Sun,
-    Mon,
-    Tue,
-    Wed,
-    Thu,
-    Fri,
-    Sat
-}
 
-// Need to account for starting new month
-// Returns array of pairs of week day and day
-fun arrayOfWeekDays(startDate: Int): Array<Pair<String, Int>> {
-    val weekDays = WeekDays.values()
-    return Array(7) {
-        weekDays[it].name to (startDate + it)
-    }
-}
 

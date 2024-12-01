@@ -17,6 +17,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.to_do.R
+import com.example.to_do.ui.navigaton.CreateTaskDestination
+import com.example.to_do.ui.navigaton.EditTaskDestination
+import com.example.to_do.ui.navigaton.HomeDestination
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,11 +61,11 @@ fun ToDoAppBar(
 
         actions = {
 
-            if (currentScreenTitle == 0) {
-            IconButton(onClick = {  }) {
-                Icon(Icons.Default.Settings, contentDescription = "Settings")
-            }
-                }
+//            if (currentScreenTitle == 0) {
+//                IconButton(onClick = { }) {
+//                    Icon(Icons.Default.Settings, contentDescription = "Settings")
+//                }
+//            }
         }
     )
 }
@@ -71,7 +74,7 @@ fun ToDoAppBar(
 @Composable
 fun ToDoAppBarHome() {
     ToDoAppBar(
-        currentScreenTitle = ToDoScreen.Home.titleResId,
+        currentScreenTitle = HomeDestination.titleRes,
         canNavigateBack = false,
         navigateUp = {},
         listSize = 8
@@ -82,7 +85,7 @@ fun ToDoAppBarHome() {
 @Composable
 fun ToDoAppBarEditTask() {
     ToDoAppBar(
-        currentScreenTitle = ToDoScreen.EditTask.titleResId,
+        currentScreenTitle = EditTaskDestination.titleRes,
         canNavigateBack = true,
         navigateUp = {}
     )
@@ -92,7 +95,7 @@ fun ToDoAppBarEditTask() {
 @Composable
 fun ToDoAppBarCreateTask() {
     ToDoAppBar(
-        currentScreenTitle = ToDoScreen.CreateTask.titleResId,
+        currentScreenTitle = CreateTaskDestination.titleRes,
         canNavigateBack = true,
         navigateUp = {}
     )
