@@ -53,7 +53,7 @@ fun ToDoAppBar(
                 IconButton(onClick = navigateUp) {
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = null
+                        contentDescription = stringResource(R.string.back_button)
                     )
                 }
             }

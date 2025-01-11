@@ -46,7 +46,7 @@ class TaskViewModel(
     // read-only state flow
     val uiState: StateFlow<TaskUIState> = _uiState.asStateFlow()
 
-    suspend fun clickTask(taskId: Int) { // suspend?
+    fun clickTask(taskId: Int) { // suspend?
         viewModelScope.launch {
             _uiState.update {
                 it.copy(

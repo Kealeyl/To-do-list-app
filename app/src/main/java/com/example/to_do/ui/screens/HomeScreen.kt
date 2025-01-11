@@ -62,8 +62,6 @@ fun HomeScreen(
 
     var listOfTasks: List<Task>
 
-
-
     if (taskUiState.userSearch.isEmpty()) {
         listOfTasks = taskUiState.listOfTasks.collectAsState().value
     } else {
@@ -159,7 +157,7 @@ fun FloatingCreateButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
     ) {
         Icon(
             imageVector = Icons.Default.Add,
-            contentDescription = "Add"
+            contentDescription = stringResource(R.string.add_button)
         )
     }
 }

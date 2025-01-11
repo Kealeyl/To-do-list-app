@@ -30,16 +30,11 @@ fun ToDoApp(
     navController: NavHostController = rememberNavController()
 ) {
     val taskUiState by taskViewModel.uiState.collectAsState()
-
     val numberOfTasks by taskUiState.numberOfTasks.collectAsState()
-
     val backStackEntry by navController.currentBackStackEntryAsState()
 
-    val coroutineScope = rememberCoroutineScope()
-
     // default value of home screen
-    val titleResId =
-        getTitleResForRoute(backStackEntry?.destination?.route ?: HomeDestination.route)
+    val titleResId = getTitleResForRoute(backStackEntry?.destination?.route ?: HomeDestination.route)
 
     Scaffold(
         topBar = {
@@ -68,9 +63,8 @@ fun ToDoApp(
                     onUserSearchChange = taskViewModel::onSearch,
                     taskUiState = taskUiState,
                     onTaskClick = { taskId ->
-                        coroutineScope.launch {
-                            taskViewModel.clickTask(taskId)
-                        }
+                        taskViewModel.clickTask(taskId)
+
                         // for a later refactor to use multiple view models
                         navController.navigate("${EditTaskDestination.route}/${taskId}")
                     },
@@ -86,7 +80,8 @@ fun ToDoApp(
                 arguments = listOf(navArgument(EditTaskDestination.taskIdArg) {
                     type = NavType.IntType
                 }) // can be accessed through view model with saved state
-            ) {
+            ) {    // SavedStateHandle automatically stores the taskId
+                // SavedStateHandle acts like a map
                 TaskEditScreen(
                     taskUIState = taskUiState,
                     onDescriptionChange = taskViewModel::onDescriptionEdit,
